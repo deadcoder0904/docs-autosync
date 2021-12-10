@@ -1,0 +1,7 @@
+query GetDocs {
+  docs {
+    id
+    text
+    published
+  }
+}

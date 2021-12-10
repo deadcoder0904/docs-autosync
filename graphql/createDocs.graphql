@@ -1,0 +1,7 @@
+mutation CreateDocs {
+  createDocs {
+    id
+    text
+    published
+  }
+}

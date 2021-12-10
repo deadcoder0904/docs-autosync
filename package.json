@@ -1,0 +1,53 @@
+{
+  "name": "docs-autosync",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "npm run generate",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "generate": "npm run generate:prisma && npm run generate:nexus && npm run generate:graphql-codegen",
+    "generate:prisma": "prisma generate",
+    "generate:nexus": "cross-env GENERATE=true cross-env DOTENV_CONFIG_PATH=.env.example ts-node -r tsconfig-paths/register --require dotenv/config --transpile-only -P nexus.tsconfig.json graphql/schema.ts",
+    "generate:graphql-codegen": "graphql-codegen",
+    "prisma:push": "prisma db push",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "clean": "rimraf dist .next"
+  },
+  "dependencies": {
+    "@kenchi/nexus-plugin-prisma": "^0.40.0",
+    "@prisma/client": "^3.6.0",
+    "apollo-server-micro": "^3.5.0",
+    "clsx": "^1.1.1",
+    "next": "12.0.7",
+    "next-connect": "^0.11.0",
+    "nexus": "^1.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-query": "^3.34.1",
+    "use-react-query-auto-sync": "^0.0.9",
+    "valtio": "^1.2.7"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^2.3.0",
+    "@graphql-codegen/near-operation-file-preset": "^2.2.2",
+    "@graphql-codegen/plugin-helpers": "^2.3.1",
+    "@graphql-codegen/typed-document-node": "^2.2.1",
+    "@graphql-codegen/typescript": "^2.4.1",
+    "@graphql-codegen/typescript-operations": "^2.2.1",
+    "@graphql-codegen/typescript-react-query": "^3.2.2",
+    "@types/react": "17.0.37",
+    "apollo-server-core": "^3.5.0",
+    "autoprefixer": "^10.4.0",
+    "cross-env": "^7.0.3",
+    "postcss": "^8.4.4",
+    "prisma": "^3.6.0",
+    "rimraf": "^3.0.2",
+    "tailwindcss": "^3.0.0",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.12.0",
+    "typescript": "4.5.2"
+  }
+}

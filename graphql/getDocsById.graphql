@@ -1,0 +1,7 @@
+query GetDocsById($id: String!) {
+  getDocsById(id: $id) {
+    id
+    text
+    published
+  }
+}

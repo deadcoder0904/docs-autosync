@@ -1,0 +1,6 @@
+mutation UpdateDocs($id: String!, $text: String!) {
+  updateDocs(id: $id, text: $text) {
+    id
+    text
+  }
+}
