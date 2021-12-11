@@ -36,10 +36,10 @@ export const Writer = () => {
   const snap = useSnapshot(state)
   const { draft, setDraft, queryResult } = useReactQueryAutoSync({
     queryOptions: {
-      queryKey: ['GetDocsById', variables],
+      queryKey: ['GetDocsById', { id: snap.docs.id }],
       queryFn: fetcher<GetDocsByIdQuery, GetDocsByIdQueryVariables>(
         GetDocsByIdDocument,
-        variables
+        { id: snap.docs.id }
       ),
     },
     mutationOptions: {
