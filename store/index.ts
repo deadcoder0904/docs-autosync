@@ -15,7 +15,7 @@ class DocsStore implements IDocsStore {
     text: '',
   }
 
-  setDocs(data: Docs | undefined) {
+  setDocs = (data: Docs | undefined) => {
     if (!data) return
 
     this.docs.id = data.id

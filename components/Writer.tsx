@@ -11,7 +11,7 @@ import {
   GetDocsByIdQuery,
   GetDocsByIdQueryVariables,
 } from '../graphql/getDocsById.generated'
-import { state } from '../store/index'
+import { state, Docs } from '../store/index'
 
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
@@ -63,11 +63,11 @@ export const Writer = () => {
   })
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const docs = {
+    const docs: Docs = {
       id: snap.docs.id,
       text: e.target.value,
     }
-    state.setDocs(docs)
+    state.docs = docs
     setDraft({
       ...draft,
       ...docs,
