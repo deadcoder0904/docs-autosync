@@ -34,6 +34,7 @@ function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
 
 export const Writer = () => {
   const snap = useSnapshot(state)
+
   const { draft, setDraft, queryResult } = useReactQueryAutoSync({
     queryOptions: {
       queryKey: ['GetDocsById', { id: snap.docs.id }],
@@ -55,6 +56,10 @@ export const Writer = () => {
       draft: state.docs,
       setDraft: state.setDocs,
     },
+    merge: (remote, local) => ({
+      ...remote,
+      ...local,
+    }),
   })
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
