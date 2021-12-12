@@ -53,6 +53,24 @@ export const DocsList = () => {
   }
 
   const deleteDocsById = (id: string) => {
+    /**
+     * doesn't work yet
+     */
+    if (docs) {
+      if (docs.length === 1) {
+        state.setDocs({ id: '', text: '' })
+      }
+      for (let i = 0; i < docs.length; i++) {
+        const current = docs[i]
+        let prev
+        if (i !== 0) {
+          prev = docs[i - 1]
+        }
+        if (current?.id === id && prev?.id && prev?.text) {
+          state.setDocs({ id: prev.id, text: prev.text })
+        }
+      }
+    }
     deleteDocs({ id })
   }
 

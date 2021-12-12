@@ -34,25 +34,13 @@ function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   }
 }
 
-export const Writer = () => {
-  const snap = useSnapshot(state)
-  const queryClient = useQueryClient()
-  const { mutate } = useCreateDocsMutation({
-    onSuccess: (data) => {
-      const queryKey = 'GetDocs'
-      queryClient.invalidateQueries(queryKey)
-
-      if (data.createDocs?.id) {
-        state.docs.id = data.createDocs?.id
-      }
-    },
-  })
-  const { draft, setDraft, queryResult } = useReactQueryAutoSync({
+const useWritingPad = (id: string) => {
+  return useReactQueryAutoSync({
     queryOptions: {
-      queryKey: ['GetDocsById', { id: snap.docs.id }],
+      queryKey: ['GetDocsById', { id }],
       queryFn: fetcher<GetDocsByIdQuery, GetDocsByIdQueryVariables>(
         GetDocsByIdDocument,
-        { id: snap.docs.id }
+        { id }
       ),
     },
     mutationOptions: {
@@ -65,6 +53,25 @@ export const Writer = () => {
     autoSaveOptions: { wait: 1000 },
     alertIfUnsavedChanges: true,
   })
+}
+
+export const Writer = () => {
+  const snap = useSnapshot(state)
+  const queryClient = useQueryClient()
+  const { mutate } = useCreateDocsMutation({
+    onSuccess: (data) => {
+      const queryKey = 'GetDocs'
+      queryClient.invalidateQueries(queryKey)
+
+      if (data.createDocs?.id) {
+        console.log(data.createDocs)
+        state.docs.id = data.createDocs?.id
+        state.docs.text = data.createDocs?.text
+      }
+    },
+  })
+
+  const { draft, setDraft, queryResult } = useWritingPad(snap.docs.id)
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const docs: Docs = {
