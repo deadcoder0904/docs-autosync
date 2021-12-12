@@ -10,6 +10,7 @@ type Docs {
 
 type Mutation {
   createDocs: Docs
+  deleteDocsById(id: String!): Docs
   updateDocs(id: String!, text: String!): Docs
 }
 

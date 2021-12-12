@@ -52,14 +52,6 @@ export const Writer = () => {
     },
     autoSaveOptions: { wait: 1000 },
     alertIfUnsavedChanges: true,
-    draftProvider: {
-      draft: state.docs,
-      setDraft: state.setDocs,
-    },
-    merge: (remote, local) => ({
-      ...remote,
-      ...local,
-    }),
   })
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -68,10 +60,6 @@ export const Writer = () => {
       text: e.target.value,
     }
     state.docs = docs
-    setDraft({
-      ...draft,
-      ...docs,
-    })
   }
 
   return (

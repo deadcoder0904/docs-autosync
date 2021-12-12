@@ -60,6 +60,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createDocs: NexusGenRootTypes['Docs'] | null; // Docs
+    deleteDocsById: NexusGenRootTypes['Docs'] | null; // Docs
     updateDocs: NexusGenRootTypes['Docs'] | null; // Docs
   }
   Query: { // field return type
@@ -76,6 +77,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     createDocs: 'Docs'
+    deleteDocsById: 'Docs'
     updateDocs: 'Docs'
   }
   Query: { // field return type name
@@ -86,6 +88,9 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    deleteDocsById: { // args
+      id: string; // String!
+    }
     updateDocs: { // args
       id: string; // String!
       text: string; // String!

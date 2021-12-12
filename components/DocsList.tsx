@@ -4,6 +4,7 @@ import { useQueryClient } from 'react-query'
 import { useSnapshot } from 'valtio'
 
 import { useCreateDocsMutation } from '../graphql/createDocs.generated'
+import { useDeleteDocsByIdMutation } from '../graphql/deleteDocsById.generated'
 import { useGetDocsQuery } from '../graphql/getDocs.generated'
 import { state } from '../store/index'
 
@@ -21,6 +22,12 @@ export const DocsList = () => {
       }
     },
   })
+  const { mutate: deleteDocs } = useDeleteDocsByIdMutation({
+    onSuccess: (data) => {
+      const queryKey = 'GetDocs'
+      queryClient.invalidateQueries(queryKey)
+    },
+  })
 
   const docs = data?.docs
 
@@ -36,6 +43,10 @@ export const DocsList = () => {
 
   const getDocsById = (id: string) => {
     state.docs.id = id
+  }
+
+  const deleteDocsById = (id: string) => {
+    deleteDocs({ id })
   }
 
   return (
@@ -66,6 +77,13 @@ export const DocsList = () => {
             onClick={() => getDocsById(doc.id)}
           >
             <span className="truncate">{doc?.text || 'Empty docs...'}</span>
+            <span
+              role="button"
+              className="ml-auto"
+              onClick={() => deleteDocsById(doc.id)}
+            >
+              ❌
+            </span>
           </button>
         )
       })}

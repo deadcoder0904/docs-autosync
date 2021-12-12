@@ -6,7 +6,7 @@ export type Docs = {
 }
 
 export interface IDocsStore {
-  docs?: Docs
+  docs: Docs
 }
 
 class DocsStore implements IDocsStore {
@@ -15,11 +15,8 @@ class DocsStore implements IDocsStore {
     text: '',
   }
 
-  setDocs = (data: Docs | undefined) => {
-    if (!data) return
-
-    this.docs.id = data.id
-    this.docs.text = data.text
+  setDocs = (docs: Docs) => {
+    this.docs = docs
   }
 }
 

@@ -65,6 +65,18 @@ const mutations = extendType({
         })
       },
     })
+
+    t.nullable.field('deleteDocsById', {
+      type: 'Docs',
+      args: {
+        id: nonNull(stringArg()),
+      },
+      resolve: async (_, { id }, ctx) => {
+        return await prisma.docs.delete({
+          where: { id },
+        })
+      },
+    })
   },
 })
 

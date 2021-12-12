@@ -26,7 +26,12 @@ export type Docs = {
 export type Mutation = {
   __typename?: "Mutation";
   createDocs?: Maybe<Docs>;
+  deleteDocsById?: Maybe<Docs>;
   updateDocs?: Maybe<Docs>;
+};
+
+export type MutationDeleteDocsByIdArgs = {
+  id: Scalars["String"];
 };
 
 export type MutationUpdateDocsArgs = {

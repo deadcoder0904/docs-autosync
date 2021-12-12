@@ -1,0 +1,5 @@
+mutation DeleteDocsById($id: String!) {
+  deleteDocsById(id: $id) {
+    id
+  }
+}
