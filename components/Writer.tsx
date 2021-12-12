@@ -47,7 +47,6 @@ export const Writer = () => {
       }
     },
   })
-
   const { draft, setDraft, queryResult } = useReactQueryAutoSync({
     queryOptions: {
       queryKey: ['GetDocsById', { id: snap.docs.id }],
@@ -83,13 +82,18 @@ export const Writer = () => {
   }
 
   return (
-    <textarea
-      className="border-2 border-gray-500 mx-20 mt-2 font-medium text-lg p-2 z-10 flex-1 h-[90vh] w-[90%] overflow-y-scroll text-gray-900 bg-transparent shadow-none outline-none resize-none focus:ring-0"
-      value={draft?.text}
-      onChange={onThreadChange}
-      onClick={onClickHandler}
-      placeholder="Write your thread here..."
-      spellCheck={false}
-    ></textarea>
+    <div>
+      <span className="absolute font-sans font-bold text-indigo-400 top-7 right-20">
+        {queryResult.data?.text === draft?.text ? 'Saved!' : 'Saving...'}
+      </span>
+      <textarea
+        className="border-2 border-gray-500 mx-20 mt-2 font-medium text-lg p-2 z-10 flex-1 h-[90vh] w-[90%] overflow-y-scroll text-gray-900 bg-transparent shadow-none outline-none resize-none focus:ring-0"
+        value={draft?.text}
+        onChange={onThreadChange}
+        onClick={onClickHandler}
+        placeholder="Write your thread here..."
+        spellCheck={false}
+      ></textarea>
+    </div>
   )
 }
