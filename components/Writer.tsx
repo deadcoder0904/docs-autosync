@@ -1,3 +1,4 @@
+import { useQueryClient } from 'react-query'
 import { useSnapshot } from 'valtio'
 import { useReactQueryAutoSync } from 'use-react-query-auto-sync'
 
@@ -11,6 +12,7 @@ import {
   GetDocsByIdQuery,
   GetDocsByIdQueryVariables,
 } from '../graphql/getDocsById.generated'
+import { useCreateDocsMutation } from '../graphql/createDocs.generated'
 import { state, Docs } from '../store/index'
 
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
@@ -34,6 +36,17 @@ function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
 
 export const Writer = () => {
   const snap = useSnapshot(state)
+  const queryClient = useQueryClient()
+  const { mutate } = useCreateDocsMutation({
+    onSuccess: (data) => {
+      const queryKey = 'GetDocs'
+      queryClient.invalidateQueries(queryKey)
+
+      if (data.createDocs?.id) {
+        state.docs.id = data.createDocs?.id
+      }
+    },
+  })
 
   const { draft, setDraft, queryResult } = useReactQueryAutoSync({
     queryOptions: {
@@ -60,6 +73,13 @@ export const Writer = () => {
       text: e.target.value,
     }
     state.docs = docs
+    setDraft(docs)
+  }
+
+  const onClickHandler = () => {
+    if (state.docs.id === '') {
+      mutate({})
+    }
   }
 
   return (
@@ -67,6 +87,7 @@ export const Writer = () => {
       className="border-2 border-gray-500 mx-20 mt-2 font-medium text-lg p-2 z-10 flex-1 h-[90vh] w-[90%] overflow-y-scroll text-gray-900 bg-transparent shadow-none outline-none resize-none focus:ring-0"
       value={draft?.text}
       onChange={onThreadChange}
+      onClick={onClickHandler}
       placeholder="Write your thread here..."
       spellCheck={false}
     ></textarea>

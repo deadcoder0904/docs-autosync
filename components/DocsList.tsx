@@ -18,7 +18,7 @@ export const DocsList = () => {
       queryClient.invalidateQueries(queryKey)
 
       if (data.createDocs?.id) {
-        state.docs.id = data.createDocs?.id
+        state.docs.id = data.createDocs.id
       }
     },
   })
@@ -43,6 +43,13 @@ export const DocsList = () => {
 
   const getDocsById = (id: string) => {
     state.docs.id = id
+    if (docs) {
+      for (let el of docs) {
+        if (el?.id === id) {
+          state.docs.text = el.text
+        }
+      }
+    }
   }
 
   const deleteDocsById = (id: string) => {
