@@ -31,12 +31,6 @@ export const DocsList = () => {
 
   const docs = data?.docs
 
-  useEffect(() => {
-    if (docs && docs?.length > 0 && docs[0] && state.docs.id === '') {
-      state.docs = docs[0]
-    }
-  }, [])
-
   const createNewDocs = () => {
     mutate({})
   }
