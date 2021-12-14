@@ -44,14 +44,18 @@ const useWritingPad = (id: string) => {
       ),
     },
     mutationOptions: {
-      mutationFn: (variables?: UpdateDocsMutationVariables) =>
+      mutationFn: async (variables?: UpdateDocsMutationVariables) =>
         fetcher<UpdateDocsMutation, UpdateDocsMutationVariables>(
           UpdateDocsDocument,
           variables
-        )(),
+        ),
     },
     autoSaveOptions: { wait: 1000 },
     alertIfUnsavedChanges: true,
+    draftProvider: {
+      draft: state.docs,
+      setDraft: state.setDocs,
+    },
   })
 }
 
@@ -62,7 +66,7 @@ export const Writer = () => {
     onSuccess: (data) => {
       const queryKey = 'GetDocs'
       queryClient.invalidateQueries(queryKey)
-
+      console.log('onSuccess')
       if (data.createDocs?.id) {
         state.setDocs({
           id: data.createDocs.id,
@@ -75,15 +79,20 @@ export const Writer = () => {
   const { draft, setDraft, queryResult } = useWritingPad(snap.docs.id)
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log('onThreadChange')
+    const text = e.target.value
     const docs: Docs = {
       id: snap.docs.id,
-      text: e.target.value,
+      text,
     }
-    state.docs = docs
-    setDraft(docs)
+    setDraft({
+      ...draft,
+      ...docs,
+    })
   }
 
   const onClickHandler = () => {
+    console.log('onClickHandler')
     if (state.docs.id === '') {
       mutate({})
     }

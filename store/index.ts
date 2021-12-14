@@ -15,8 +15,10 @@ class DocsStore implements IDocsStore {
     text: '',
   }
 
-  setDocs = (docs: Docs) => {
-    this.docs = docs
+  setDocs = (docs: Docs | undefined) => {
+    if (docs) {
+      this.docs = docs
+    }
   }
 }
 

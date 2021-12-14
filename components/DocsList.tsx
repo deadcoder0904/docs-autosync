@@ -36,6 +36,7 @@ export const DocsList = () => {
   }
 
   const getDocsById = (id: string) => {
+    console.log('getDocsById')
     if (docs) {
       for (let i = 0; i < docs?.length; i++) {
         const el = docs[i]
