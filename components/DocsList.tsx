@@ -36,11 +36,14 @@ export const DocsList = () => {
   }
 
   const getDocsById = (id: string) => {
-    state.docs.id = id
     if (docs) {
-      for (let el of docs) {
-        if (el?.id === id) {
-          state.docs.text = el.text
+      for (let i = 0; i < docs?.length; i++) {
+        const el = docs[i]
+        if (el && el?.id === id) {
+          state.setDocs({
+            id,
+            text: el.text,
+          })
         }
       }
     }
@@ -49,21 +52,23 @@ export const DocsList = () => {
   const deleteDocsById = (id: string) => {
     /**
      * doesn't work yet
+     * 1. see if current.id = id, then point it to previous one
      */
     if (docs) {
-      if (docs.length === 1) {
-        state.setDocs({ id: '', text: '' })
-      }
       for (let i = 0; i < docs.length; i++) {
         const current = docs[i]
         let prev
         if (i !== 0) {
           prev = docs[i - 1]
         }
+        console.log({ current, id, prev })
         if (current?.id === id && prev?.id && prev?.text) {
           state.setDocs({ id: prev.id, text: prev.text })
         }
       }
+      // if (docs.length === 1) {
+      //   state.setDocs({ id: '', text: '' })
+      // }
     }
     deleteDocs({ id })
   }

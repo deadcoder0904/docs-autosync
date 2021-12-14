@@ -64,9 +64,10 @@ export const Writer = () => {
       queryClient.invalidateQueries(queryKey)
 
       if (data.createDocs?.id) {
-        console.log(data.createDocs)
-        state.docs.id = data.createDocs?.id
-        state.docs.text = data.createDocs?.text
+        state.setDocs({
+          id: data.createDocs.id,
+          text: data.createDocs.text,
+        })
       }
     },
   })
