@@ -42,6 +42,7 @@ const useWritingPad = (id: string) => {
         GetDocsByIdDocument,
         { id }
       ),
+      enabled: id !== '',
     },
     mutationOptions: {
       mutationFn: (variables?: UpdateDocsMutationVariables) =>

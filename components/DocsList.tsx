@@ -11,7 +11,7 @@ import { state } from '../store/index'
 export const DocsList = () => {
   const snap = useSnapshot(state)
   const queryClient = useQueryClient()
-  const { data } = useGetDocsQuery()
+  const { isLoading, isError, data, error } = useGetDocsQuery()
   const { mutate } = useCreateDocsMutation({
     onSuccess: (data) => {
       const queryKey = 'GetDocs'
