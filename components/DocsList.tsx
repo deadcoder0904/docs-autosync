@@ -18,7 +18,7 @@ export const DocsList = () => {
       queryClient.invalidateQueries(queryKey)
 
       if (data.createDocs?.id) {
-        state.docs.id = data.createDocs.id
+        state.doc.id = data.createDocs.id
       }
     },
   })
@@ -41,7 +41,7 @@ export const DocsList = () => {
       for (let i = 0; i < docs?.length; i++) {
         const el = docs[i]
         if (el && el?.id === id) {
-          state.setDocs({
+          state.setDoc({
             id,
             text: el.text,
           })
@@ -64,7 +64,7 @@ export const DocsList = () => {
         }
         console.log({ current, id, prev })
         if (current?.id === id && prev?.id && prev?.text) {
-          state.setDocs({ id: prev.id, text: prev.text })
+          state.setDoc({ id: prev.id, text: prev.text })
         }
       }
       // if (docs.length === 1) {
@@ -94,9 +94,9 @@ export const DocsList = () => {
               'inline-flex items-center w-full h-12 px-3 mt-0 text-sm font-medium leading-4 shadow-sm dark:text-gray-700 border-primary-light focus:outline-none group',
               {
                 'dark:bg-primary-dark border-l-8 border-yellow-400':
-                  snap.docs.id === doc.id,
+                  snap.doc.id === doc.id,
                 'dark:text-gray-300 dark:hover:bg-primary-darker':
-                  snap.docs.id !== doc.id,
+                  snap.doc.id !== doc.id,
               }
             )}
             onClick={() => getDocsById(doc.id)}

@@ -1,28 +1,30 @@
 import { proxy } from 'valtio'
 
-export type Docs = {
+export type Doc = {
   id: string
   text: string
 }
 
 export interface IDocsStore {
-  docs: Docs
+  doc: Doc
+  setDoc(doc: Doc | undefined): void
 }
 
 class DocsStore implements IDocsStore {
-  docs: Docs = {
+  doc: Doc = {
     id: '',
     text: '',
   }
 
-  setDocs = (docs: Docs | undefined) => {
-    if (docs) {
-      this.docs = docs
+  setDoc(doc: Doc | undefined) {
+    if (doc) {
+      this.doc.id = doc.id
+      this.doc.text = doc.text
     }
   }
 }
 
-export const state = proxy(new DocsStore())
+export const state = proxy<IDocsStore>(new DocsStore())
 
 if (process.env.NODE_ENV === 'development') {
   import('valtio/utils').then((utils) => {

@@ -13,7 +13,7 @@ import {
   GetDocsByIdQueryVariables,
 } from '../graphql/getDocsById.generated'
 import { useCreateDocsMutation } from '../graphql/createDocs.generated'
-import { state, Docs } from '../store/index'
+import { state, Doc } from '../store/index'
 
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
@@ -53,8 +53,8 @@ const useWritingPad = (id: string) => {
     autoSaveOptions: { wait: 1000 },
     alertIfUnsavedChanges: true,
     draftProvider: {
-      draft: state.docs,
-      setDraft: state.setDocs,
+      draft: state.doc,
+      setDraft: state.setDoc,
     },
   })
 }
@@ -68,7 +68,7 @@ export const Writer = () => {
       queryClient.invalidateQueries(queryKey)
       console.log('onSuccess')
       if (data.createDocs?.id) {
-        state.setDocs({
+        state.setDoc({
           id: data.createDocs.id,
           text: data.createDocs.text,
         })
@@ -76,13 +76,13 @@ export const Writer = () => {
     },
   })
 
-  const { draft, setDraft, queryResult } = useWritingPad(snap.docs.id)
+  const { draft, setDraft, queryResult } = useWritingPad(snap.doc.id)
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     console.log('onThreadChange')
     const text = e.target.value
-    const docs: Docs = {
-      id: snap.docs.id,
+    const docs: Doc = {
+      id: snap.doc.id,
       text,
     }
     setDraft({
@@ -93,7 +93,7 @@ export const Writer = () => {
 
   const onClickHandler = () => {
     console.log('onClickHandler')
-    if (state.docs.id === '') {
+    if (state.doc.id === '') {
       mutate({})
     }
   }
