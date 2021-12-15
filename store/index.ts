@@ -7,6 +7,7 @@ export type Docs = {
 
 export interface IDocsStore {
   docs: Docs
+  setDocs: (docs: Docs) => void
 }
 
 class DocsStore implements IDocsStore {
@@ -15,12 +16,13 @@ class DocsStore implements IDocsStore {
     text: '',
   }
 
-  setDocs = (docs: Docs) => {
-    this.docs = docs
+  setDocs(docs: Docs) {
+    this.docs.id = docs.id
+    this.docs.text = docs.text
   }
 }
 
-export const state = proxy(new DocsStore())
+export const state = proxy<IDocsStore>(new DocsStore())
 
 if (process.env.NODE_ENV === 'development') {
   import('valtio/utils').then((utils) => {

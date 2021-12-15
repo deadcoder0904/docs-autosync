@@ -63,12 +63,14 @@ export const Writer = () => {
     onSuccess: (data) => {
       const queryKey = 'GetDocs'
       queryClient.invalidateQueries(queryKey)
-
+      console.log(data.createDocs)
+      console.log(state.docs)
       if (data.createDocs?.id) {
         state.setDocs({
           id: data.createDocs.id,
           text: data.createDocs.text,
         })
+        console.log(state.docs)
       }
     },
   })
@@ -85,6 +87,7 @@ export const Writer = () => {
   }
 
   const onClickHandler = () => {
+    console.log(state.docs)
     if (state.docs.id === '') {
       mutate({})
     }

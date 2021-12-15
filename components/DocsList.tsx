@@ -11,7 +11,7 @@ import { state } from '../store/index'
 export const DocsList = () => {
   const snap = useSnapshot(state)
   const queryClient = useQueryClient()
-  const { isLoading, isError, data, error } = useGetDocsQuery()
+  const { isLoading, isError, isSuccess, data, error } = useGetDocsQuery()
   const { mutate } = useCreateDocsMutation({
     onSuccess: (data) => {
       const queryKey = 'GetDocs'
@@ -39,6 +39,7 @@ export const DocsList = () => {
     if (docs) {
       for (let i = 0; i < docs?.length; i++) {
         const el = docs[i]
+        console.log({ el, id, snapId: snap.docs.id })
         if (el && el?.id === id) {
           state.setDocs({
             id,
@@ -84,7 +85,7 @@ export const DocsList = () => {
       </button>
       {docs?.map((doc) => {
         if (!doc?.id) return null
-
+        console.log({ did: doc.id, sid: state.docs.id })
         return (
           <button
             key={doc.id}
@@ -93,9 +94,9 @@ export const DocsList = () => {
               'inline-flex items-center w-full h-12 px-3 mt-0 text-sm font-medium leading-4 shadow-sm dark:text-gray-700 border-primary-light focus:outline-none group',
               {
                 'dark:bg-primary-dark border-l-8 border-yellow-400':
-                  snap.docs.id === doc.id,
+                  state.docs.id === doc.id,
                 'dark:text-gray-300 dark:hover:bg-primary-darker':
-                  snap.docs.id !== doc.id,
+                  state.docs.id !== doc.id,
               }
             )}
             onClick={() => getDocsById(doc.id)}
