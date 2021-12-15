@@ -81,13 +81,13 @@ export const Writer = () => {
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     console.log('onThreadChange')
     const text = e.target.value
-    const docs: Doc = {
+    const doc: Doc = {
       id: snap.doc.id,
       text,
     }
     setDraft({
       ...draft,
-      ...docs,
+      ...doc,
     })
   }
 
