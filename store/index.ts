@@ -1,24 +1,24 @@
 import { proxy } from 'valtio'
 
-export type Docs = {
+export type Doc = {
   id: string
   text: string
 }
 
 export interface IDocsStore {
-  docs: Docs
-  setDocs: (docs: Docs) => void
+  doc: Doc
+  setDoc: (doc: Doc) => void
 }
 
 class DocsStore implements IDocsStore {
-  docs: Docs = {
+  doc: Doc = {
     id: '',
     text: '',
   }
 
-  setDocs(docs: Docs) {
-    this.docs.id = docs.id
-    this.docs.text = docs.text
+  setDoc(docs: Doc) {
+    this.doc.id = docs.id
+    this.doc.text = docs.text
   }
 }
 

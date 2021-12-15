@@ -13,7 +13,7 @@ import {
   GetDocsByIdQueryVariables,
 } from '../graphql/getDocsById.generated'
 import { useCreateDocsMutation } from '../graphql/createDocs.generated'
-import { state, Docs } from '../store/index'
+import { state, Doc } from '../store/index'
 
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
@@ -63,32 +63,30 @@ export const Writer = () => {
     onSuccess: (data) => {
       const queryKey = 'GetDocs'
       queryClient.invalidateQueries(queryKey)
-      console.log(data.createDocs)
-      console.log(state.docs)
+
       if (data.createDocs?.id) {
-        state.setDocs({
+        state.setDoc({
           id: data.createDocs.id,
+          // ERROR: when creating new docs, textarea still shows old docs text. it should be empty instead as stated below
           text: data.createDocs.text,
         })
-        console.log(state.docs)
       }
     },
   })
 
-  const { draft, setDraft, queryResult } = useWritingPad(snap.docs.id)
+  const { draft, setDraft, queryResult } = useWritingPad(snap.doc.id)
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const docs: Docs = {
-      id: snap.docs.id,
+    const doc: Doc = {
+      id: snap.doc.id,
       text: e.target.value,
     }
-    state.docs = docs
-    setDraft(docs)
+    state.doc = doc
+    setDraft(doc)
   }
 
   const onClickHandler = () => {
-    console.log(state.docs)
-    if (state.docs.id === '') {
+    if (state.doc.id === '') {
       mutate({})
     }
   }
