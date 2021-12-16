@@ -76,6 +76,7 @@ export const Writer = () => {
     },
   })
 
+  // snap.doc.id gets updated & the api call gets called but the textarea value isn't updated
   const { draft, setDraft, queryResult } = useWritingPad(snap.doc.id)
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
