@@ -82,8 +82,12 @@ export const DocsList = () => {
       >
         New Docs
       </button>
-      {docs?.map((doc) => {
+      {docs?.map((doc, i) => {
         if (!doc?.id) return null
+
+        if (i === 0 && state.doc.id === '') {
+          state.doc.id = doc.id
+        }
 
         return (
           <button
