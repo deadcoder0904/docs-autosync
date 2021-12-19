@@ -36,12 +36,10 @@ export const DocsList = () => {
   }
 
   const getDocsById = (id: string) => {
-    console.log('getDocsById')
     if (docs) {
       for (let i = 0; i < docs?.length; i++) {
         const el = docs[i]
         if (el && el?.id === id) {
-          console.log({ id: el.id, text: el.text })
           state.setDoc({
             id,
             text: el.text,
@@ -63,7 +61,6 @@ export const DocsList = () => {
         if (i !== 0) {
           prev = docs[i - 1]
         }
-        console.log({ current, id, prev })
         if (current?.id === id && prev?.id && prev?.text) {
           state.setDoc({ id: prev.id, text: prev.text })
         }

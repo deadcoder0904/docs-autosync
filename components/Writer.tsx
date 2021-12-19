@@ -26,22 +26,22 @@ export const Writer = () => {
   })
 
   const updateDraft = useCallback(
-    (newText: string) => {
-      console.log('updateDraft')
-      console.log({ id: snap.doc.id, text: newText })
-      updateDocs({ id: snap.doc.id, text: newText })
+    ({ id, text }: Doc) => {
+      if (id !== '') {
+        updateDocs({ id, text })
+      }
       toggleIsSaved(true)
     },
     [snap.doc.id]
   )
 
   useAutosave({
-    data: snap.doc.text,
+    data: snap.doc,
     onSave: updateDraft,
+    interval: 500,
   })
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log('onThreadChange')
     toggleIsSaved(false)
     const text = e.target.value
     const doc: Doc = {
