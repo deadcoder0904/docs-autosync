@@ -17,8 +17,8 @@ export const DocsList = () => {
       const queryKey = 'GetDocs'
       queryClient.invalidateQueries(queryKey)
 
-      if (data.createDocs?.id) {
-        state.doc.id = data.createDocs.id
+      if (data.createDocs) {
+        state.setDoc(data.createDocs)
       }
     },
   })
@@ -41,6 +41,7 @@ export const DocsList = () => {
       for (let i = 0; i < docs?.length; i++) {
         const el = docs[i]
         if (el && el?.id === id) {
+          console.log({ id: el.id, text: el.text })
           state.setDoc({
             id,
             text: el.text,
@@ -87,7 +88,10 @@ export const DocsList = () => {
         if (!doc?.id) return null
 
         if (i === 0 && state.doc.id === '') {
-          state.doc.id = doc.id
+          state.setDoc({
+            id: doc.id,
+            text: doc.text,
+          })
         }
 
         return (

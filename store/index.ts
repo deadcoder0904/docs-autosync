@@ -7,7 +7,7 @@ export type Doc = {
 
 export interface IDocsStore {
   doc: Doc
-  setDoc(doc: Doc | undefined): void
+  setDoc(doc: Doc): void
 }
 
 class DocsStore implements IDocsStore {
@@ -16,14 +16,9 @@ class DocsStore implements IDocsStore {
     text: '',
   }
 
-  setDoc(doc: Doc | undefined) {
-    console.log('setDoc===')
-    console.log(this, this.doc, doc)
-    // throws error here. TypeError: Cannot read properties of undefined (reading 'doc')
-    if (doc) {
-      this.doc.id = doc.id
-      this.doc.text = doc.text
-    }
+  setDoc(doc: Doc) {
+    this.doc.id = doc.id
+    this.doc.text = doc.text
   }
 }
 

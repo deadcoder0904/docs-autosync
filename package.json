@@ -25,9 +25,9 @@
     "next-connect": "^0.11.0",
     "nexus": "^1.1.0",
     "react": "17.0.2",
+    "react-autosave": "^0.3.0",
     "react-dom": "17.0.2",
     "react-query": "^3.34.1",
-    "use-react-query-auto-sync": "^0.0.9",
     "valtio": "^1.2.7"
   },
   "devDependencies": {
