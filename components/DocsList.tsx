@@ -1,27 +1,44 @@
 import clsx from 'clsx'
-import { useEffect } from 'react'
+import { MouseEvent, MouseEventHandler, useEffect } from 'react'
 import { useQueryClient } from 'react-query'
 import { useSnapshot } from 'valtio'
 
 import { useCreateDocsMutation } from '../graphql/createDocs.generated'
 import { useDeleteDocsByIdMutation } from '../graphql/deleteDocsById.generated'
 import { useGetDocsQuery } from '../graphql/getDocs.generated'
-import { state } from '../store/index'
+import { Doc, state } from '../store/index'
 
 export const DocsList = () => {
   const snap = useSnapshot(state)
   const queryClient = useQueryClient()
   const { data } = useGetDocsQuery()
-  const { mutate } = useCreateDocsMutation({
-    onSuccess: (data) => {
+  const { mutate: createNewDocument } = useCreateDocsMutation({
+    onMutate: async (newDocs: Doc) => {
       const queryKey = 'GetDocs'
-      queryClient.invalidateQueries(queryKey)
+      await queryClient.cancelQueries(queryKey)
 
-      if (data.createDocs) {
-        state.setDoc(data.createDocs)
+      const previousDocs = queryClient.getQueryData<Doc[] | undefined>(queryKey)
+
+      queryClient.setQueryData<Doc[] | undefined>(queryKey, (oldDocs: any) => {
+        return { ...oldDocs, ...newDocs }
+      })
+
+      return { previousDocs }
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (err, newDocs, context: any) => {
+      queryClient.setQueryData('GetDocs', context.previousDocs)
+    },
+    // Always refetch after error or success:
+    onSettled: (newDocs, error, variables, context) => {
+      if (newDocs?.createDocs) {
+        const { id, text } = newDocs.createDocs
+        state.setDoc({ id, text })
       }
+      queryClient.invalidateQueries('GetDocs')
     },
   })
+
   const { mutate: deleteDocs } = useDeleteDocsByIdMutation({
     onSuccess: (data) => {
       const queryKey = 'GetDocs'
@@ -32,7 +49,7 @@ export const DocsList = () => {
   const docs = data?.docs
 
   const createNewDocs = () => {
-    mutate({})
+    createNewDocument({})
   }
 
   const getDocsById = (id: string) => {
@@ -50,24 +67,32 @@ export const DocsList = () => {
   }
 
   const deleteDocsById = (id: string) => {
-    /**
-     * doesn't work yet
-     * 1. see if current.id = id, then point it to previous one
-     */
+    console.log(`deleteDocsById -> ${id}`)
     if (docs) {
       for (let i = 0; i < docs.length; i++) {
+        const prev = i === 0 ? undefined : docs[i - 1]
         const current = docs[i]
-        let prev
-        if (i !== 0) {
-          prev = docs[i - 1]
-        }
-        if (current?.id === id && prev?.id && prev?.text) {
-          state.setDoc({ id: prev.id, text: prev.text })
+        const next = i < docs.length - 1 ? docs[i + 1] : undefined
+
+        console.log({ prev, current, next })
+        if (current?.id === id) {
+          if (prev) {
+            console.log('inside if')
+            state.setDoc({ id: prev.id, text: prev.text })
+          } else {
+            console.log('else')
+            // if the first item (i=0) is selected, then make the next one selected when deleting the first item
+            const next = docs[i + 1]
+            console.log({ next, i })
+            if (next) {
+              state.setDoc({ id: next.id, text: next.text })
+            } else if (docs.length === 1) {
+              console.log(docs.length === 1)
+              state.setDoc({ id: undefined, text: undefined })
+            }
+          }
         }
       }
-      // if (docs.length === 1) {
-      //   state.setDocs({ id: '', text: '' })
-      // }
     }
     deleteDocs({ id })
   }
@@ -84,7 +109,7 @@ export const DocsList = () => {
       {docs?.map((doc, i) => {
         if (!doc?.id) return null
 
-        if (i === 0 && state.doc.id === '') {
+        if (i === 0 && !state.doc.id) {
           state.setDoc({
             id: doc.id,
             text: doc.text,
@@ -96,7 +121,7 @@ export const DocsList = () => {
             key={doc.id}
             type="button"
             className={clsx(
-              'inline-flex items-center w-full h-12 px-3 mt-0 text-sm font-medium leading-4 shadow-sm dark:text-gray-700 border-primary-light focus:outline-none group',
+              'inline-flex items-center w-full h-12 pl-3 mt-0 text-sm font-medium leading-4 shadow-sm dark:text-gray-700 border-primary-light focus:outline-none group',
               {
                 'dark:bg-primary-dark border-l-8 border-yellow-400':
                   snap.doc.id === doc.id,
@@ -109,8 +134,11 @@ export const DocsList = () => {
             <span className="truncate">{doc?.text || 'Empty docs...'}</span>
             <span
               role="button"
-              className="ml-auto"
-              onClick={() => deleteDocsById(doc.id)}
+              className="p-4 ml-auto bg-red-200"
+              onClick={(e: MouseEvent<HTMLSpanElement>) => {
+                e.stopPropagation()
+                deleteDocsById(doc.id)
+              }}
             >
               ❌
             </span>

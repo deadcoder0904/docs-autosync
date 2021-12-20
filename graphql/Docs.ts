@@ -61,6 +61,7 @@ const mutations = extendType({
         text: nonNull(stringArg()),
       },
       resolve: async (_, { id, text }, ctx) => {
+        console.log({ id, text })
         return await prisma.docs.update({
           data: { text },
           where: { id },

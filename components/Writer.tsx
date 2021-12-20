@@ -27,7 +27,9 @@ export const Writer = () => {
 
   const updateDraft = useCallback(
     ({ id, text }: Doc) => {
-      if (id !== '') {
+      if (id && text) {
+        console.log('updateDraft')
+        console.log({ id, text, doc: snap.doc })
         updateDocs({ id, text })
       }
       toggleIsSaved(true)
