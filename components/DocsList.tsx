@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { MouseEvent } from 'react'
 import { v4 } from 'uuid'
 import toast from 'react-hot-toast'
+import { subscribe } from 'valtio'
 import { useQueryClient } from 'react-query'
 
 import { useCreateDocsMutation } from '../graphql/createDocs.generated'
@@ -66,9 +67,10 @@ export const DocsList = () => {
 
       if (previousData) {
         const docs = previousData.docs
-        console.log({ previousData, len: docs.length })
         if (docs.length === 1) {
+          console.log(state.doc)
           state.setDoc({ id: undefined, text: undefined })
+          console.log({ previousData, len: docs.length, doc: state.doc })
         }
         queryClient.setQueryData<IDocs>(queryKey, {
           docs: docs.filter((doc) => doc.id !== deletedDocs.id),
@@ -97,6 +99,10 @@ export const DocsList = () => {
   const getDocsById = (id: string) => {
     if (docs) {
       const el = docs.find((item) => item?.id === id)
+      subscribe(state.doc.text, () =>
+        console.log('state.doc.text has changed to', state.doc.text)
+      )
+
       if (el) {
         state.setDoc({
           id,
