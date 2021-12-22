@@ -1,4 +1,4 @@
-import { proxy } from 'valtio'
+import { proxy, useSnapshot } from 'valtio'
 
 export type Doc = {
   id?: string
@@ -24,6 +24,7 @@ class DocsStore implements IDocsStore {
 }
 
 export const state = proxy<IDocsStore>(new DocsStore())
+export const useStore = () => useSnapshot(state)
 
 if (process.env.NODE_ENV === 'development') {
   import('valtio/utils').then((utils) => {

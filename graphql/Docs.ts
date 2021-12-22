@@ -29,7 +29,7 @@ const queries = extendType({
         id: nonNull(stringArg()),
       },
       resolve: (_, { id }, ctx) => {
-        if (id === '') return null
+        if (!id) return null
 
         return prisma.docs.findUnique({
           where: {
@@ -61,6 +61,7 @@ const mutations = extendType({
         text: nonNull(stringArg()),
       },
       resolve: async (_, { id, text }, ctx) => {
+        console.log('updateDocs')
         console.log({ id, text })
         return await prisma.docs.update({
           data: { text },
