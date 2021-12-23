@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { MouseEvent } from 'react'
+import { MouseEvent, useState, useEffect } from 'react'
 import { v4 } from 'uuid'
 import toast from 'react-hot-toast'
 import { subscribe } from 'valtio'
@@ -18,6 +18,17 @@ export const DocsList = () => {
   const snap = useStore()
   const queryClient = useQueryClient()
   const { data } = useGetDocsQuery()
+
+  useEffect(
+    () =>
+      subscribe(state.doc, () => {
+        console.log('subscribe---')
+        console.log(state.doc.text)
+        // state.setDoc()
+      }),
+    []
+  )
+
   const { mutate: createNewDocument } = useCreateDocsMutation({
     onMutate: async () => {
       const queryKey = 'GetDocs'
@@ -99,9 +110,6 @@ export const DocsList = () => {
   const getDocsById = (id: string) => {
     if (docs) {
       const el = docs.find((item) => item?.id === id)
-      subscribe(state.doc.text, () =>
-        console.log('state.doc.text has changed to', state.doc.text)
-      )
 
       if (el) {
         state.setDoc({
@@ -111,7 +119,6 @@ export const DocsList = () => {
       }
     }
   }
-
   const deleteDocsById = (id: string) => {
     console.log(`deleteDocsById -> ${id}`)
     if (docs) {

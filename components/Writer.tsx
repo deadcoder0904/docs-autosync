@@ -44,12 +44,13 @@ export const Writer = () => {
   })
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    toggleIsSaved(false)
     const text = e.target.value
+    console.log({ text })
     const doc: Doc = {
       id: snap.doc.id,
       text,
     }
+    toggleIsSaved(false)
     state.setDoc(doc)
   }
 
