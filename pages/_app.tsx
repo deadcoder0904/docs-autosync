@@ -13,7 +13,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       {process.env.NODE_ENV === 'development' && (
         <ReactQueryDevtools initialIsOpen={false} />
       )}
-      <Toaster position="top-center" />
+      <Toaster position="bottom-left" />
       <Component {...pageProps} />
     </QueryClientProvider>
   )

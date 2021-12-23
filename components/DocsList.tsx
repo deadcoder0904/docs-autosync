@@ -19,14 +19,11 @@ export const DocsList = () => {
   const queryClient = useQueryClient()
   const { data } = useGetDocsQuery()
 
-  useEffect(
-    () =>
-      subscribe(state.doc, () => {
-        console.log('state.doc.text has changed to', state.doc.text)
-        console.log('finished')
-      }),
-    []
-  )
+  useEffect(() => {
+    subscribe(state, () => {
+      console.log('state.doc.text has changed to', state.doc.text)
+    })
+  }, [])
 
   useEffect(() => {}, [data?.docs])
 
@@ -117,7 +114,6 @@ export const DocsList = () => {
           id,
           text: el.text,
         })
-        console.log('calling')
       }
     }
   }
