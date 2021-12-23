@@ -152,6 +152,9 @@ export const DocsList = () => {
           })
         }
 
+        const selected = snap.doc.id === doc.id
+        const text = selected ? snap.doc.text : doc.text
+
         return (
           <button
             key={doc.id}
@@ -160,14 +163,13 @@ export const DocsList = () => {
               'inline-flex items-center w-full h-12 pl-3 mt-0 text-sm font-medium leading-4 shadow-sm border-primary-light focus:outline-none group',
               {
                 'dark:text-gray-700 dark:bg-primary-dark border-l-8 border-yellow-400':
-                  snap.doc.id === doc.id,
-                'dark:text-gray-300 dark:hover:bg-primary-darker':
-                  snap.doc.id !== doc.id,
+                  selected,
+                'dark:text-gray-300 dark:hover:bg-primary-darker': !selected,
               }
             )}
             onClick={() => getDocsById(doc.id)}
           >
-            <span className="truncate">{doc?.text || 'Empty docs...'}</span>
+            <span className="truncate">{text || 'Empty docs...'}</span>
             <span
               role="button"
               className="p-4 ml-auto bg-red-200"

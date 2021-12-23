@@ -68,7 +68,7 @@ export const Writer = () => {
       </span>
       <textarea
         className="border-2 border-gray-500 mx-20 mt-2 font-medium text-lg p-2 z-10 flex-1 h-[90vh] w-[90%] overflow-y-scroll text-gray-900 bg-transparent shadow-none outline-none resize-none focus:ring-0"
-        value={snap.doc.text}
+        value={snap.doc.text || ''}
         onChange={onThreadChange}
         onClick={onClickHandler}
         placeholder="Write your thread here..."
