@@ -22,12 +22,13 @@ export const DocsList = () => {
   useEffect(
     () =>
       subscribe(state.doc, () => {
-        console.log('subscribe---')
-        console.log(state.doc.text)
-        // state.setDoc()
+        console.log('state.doc.text has changed to', state.doc.text)
+        console.log('finished')
       }),
     []
   )
+
+  useEffect(() => {}, [data?.docs])
 
   const { mutate: createNewDocument } = useCreateDocsMutation({
     onMutate: async () => {
@@ -116,9 +117,11 @@ export const DocsList = () => {
           id,
           text: el.text,
         })
+        console.log('calling')
       }
     }
   }
+
   const deleteDocsById = (id: string) => {
     console.log(`deleteDocsById -> ${id}`)
     if (docs) {

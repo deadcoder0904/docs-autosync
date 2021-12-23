@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 import { useQueryClient } from 'react-query'
-import { useSnapshot } from 'valtio'
 import { useAutosave } from 'react-autosave'
 
 import { useUpdateDocsMutation } from '../graphql/updateDocs.generated'
