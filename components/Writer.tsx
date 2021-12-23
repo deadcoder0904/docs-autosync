@@ -35,13 +35,13 @@ function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
 }
 
 const useWritingPad = (id: string) => {
-  return useReactQueryAutoSync({
+  return useReactQueryAutoSync<Doc>({
     queryOptions: {
       queryKey: ['GetDocsById', { id }],
-      queryFn: fetcher<GetDocsByIdQuery, GetDocsByIdQueryVariables>(
+      queryFn: () => fetcher<GetDocsByIdQuery, GetDocsByIdQueryVariables>(
         GetDocsByIdDocument,
         { id }
-      ),
+      )().then(res => res.getDocsById!),
       enabled: id !== '',
     },
     mutationOptions: {
