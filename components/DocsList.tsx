@@ -19,16 +19,6 @@ export const DocsList = () => {
   const queryClient = useQueryClient()
   const { data } = useGetDocsQuery()
 
-  useEffect(
-    () =>
-      subscribe(state.doc, () => {
-        console.log('subscribe---')
-        console.log(state.doc.text)
-        // state.setDoc()
-      }),
-    []
-  )
-
   const { mutate: createNewDocument } = useCreateDocsMutation({
     onMutate: async () => {
       const queryKey = 'GetDocs'
