@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 import { useQueryClient } from 'react-query'
-import { useSnapshot } from 'valtio'
 import { useAutosave } from 'react-autosave'
 
 import { useUpdateDocsMutation } from '../graphql/updateDocs.generated'
@@ -28,17 +27,15 @@ export const Writer = () => {
   const updateDraft = useCallback(
     ({ id, text }: Doc) => {
       if (id && text) {
-        console.log('updateDraft')
-        console.log({ id, text, doc: snap.doc })
         updateDocs({ id, text })
       }
       toggleIsSaved(true)
     },
-    [snap.doc.id]
+    [snap.currentDoc.id]
   )
 
   useAutosave({
-    data: snap.doc,
+    data: snap.currentDoc,
     onSave: updateDraft,
     interval: 500,
   })
@@ -47,7 +44,7 @@ export const Writer = () => {
     const text = e.target.value
     console.log({ text })
     const doc: Doc = {
-      id: snap.doc.id,
+      id: snap.currentDoc.id,
       text,
     }
     toggleIsSaved(false)
@@ -56,7 +53,7 @@ export const Writer = () => {
 
   const onClickHandler = () => {
     console.log('onClickHandler')
-    if (!snap.doc.id) {
+    if (!snap.currentDoc.id) {
       createNewDoc({})
     }
   }
@@ -68,7 +65,7 @@ export const Writer = () => {
       </span>
       <textarea
         className="border-2 border-gray-500 mx-20 mt-2 font-medium text-lg p-2 z-10 flex-1 h-[90vh] w-[90%] overflow-y-scroll text-gray-900 bg-transparent shadow-none outline-none resize-none focus:ring-0"
-        value={snap.doc.text || ''}
+        value={snap.currentDoc.text || ''}
         onChange={onThreadChange}
         onClick={onClickHandler}
         placeholder="Write your thread here..."

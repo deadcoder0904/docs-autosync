@@ -69,9 +69,7 @@ export const DocsList = () => {
       if (previousData) {
         const docs = previousData.docs
         if (docs.length === 1) {
-          console.log(state.doc)
           state.setDoc({ id: undefined, text: undefined })
-          console.log({ previousData, len: docs.length, doc: state.doc })
         }
         queryClient.setQueryData<IDocs>(queryKey, {
           docs: docs.filter((doc) => doc.id !== deletedDocs.id),
@@ -93,6 +91,19 @@ export const DocsList = () => {
 
   const docs = data?.docs
 
+  useEffect(() => {
+    if (data?.docs) {
+      console.log('inside useEffect')
+      const latestDocs = []
+      for (let item of data.docs) {
+        if (item) {
+          latestDocs.push(item)
+        }
+      }
+      state.docs = latestDocs
+    }
+  }, [data?.docs])
+
   const createNewDocs = () => {
     createNewDocument({})
   }
@@ -113,7 +124,7 @@ export const DocsList = () => {
     console.log(`deleteDocsById -> ${id}`)
     if (docs) {
       const el = docs.find((item) => item?.id === id)
-      if (el && el.id === snap.doc.id) {
+      if (el && el.id === snap.currentDoc.id) {
         state.setDoc({
           id: undefined,
           text: undefined,
@@ -135,15 +146,15 @@ export const DocsList = () => {
       {docs?.map((doc, i) => {
         if (!doc?.id) return null
 
-        if (i === 0 && !snap.doc.id) {
+        if (i === 0 && !snap.currentDoc.id) {
           state.setDoc({
             id: doc.id,
             text: doc.text,
           })
         }
 
-        const selected = snap.doc.id === doc.id
-        const text = selected ? snap.doc.text : doc.text
+        const selected = snap.currentDoc.id === doc.id
+        const text = selected ? snap.currentDoc.text : doc.text
 
         return (
           <button
