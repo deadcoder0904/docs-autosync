@@ -42,18 +42,18 @@ export const Writer = () => {
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value
-    console.log({ text })
     const doc: Doc = {
       id: snap.currentDoc.id,
       text,
     }
     toggleIsSaved(false)
+    const i = state.docs.findIndex((item) => item.id === snap.currentDoc.id)
+    state.docs[i] = doc
     state.setDoc(doc)
   }
 
   const onClickHandler = () => {
-    console.log('onClickHandler')
-    if (!snap.currentDoc.id) {
+    if (!state.currentDoc.id) {
       createNewDoc({})
     }
   }
