@@ -61,8 +61,14 @@ const mutations = extendType({
         text: nonNull(stringArg()),
       },
       resolve: async (_, { id, text }, ctx) => {
-        console.log('updateDocs')
-        console.log({ id, text })
+        const docExists = await prisma.docs.findUnique({
+          where: {
+            id,
+          },
+        })
+
+        if (!docExists) return null
+
         return await prisma.docs.update({
           data: { text },
           where: { id },

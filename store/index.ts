@@ -6,19 +6,21 @@ export type Doc = {
 }
 
 export interface IDocsStore {
-  doc: Doc
-  setDoc(doc: Doc): void
+  docs: Doc[] | []
+  currentDoc: Doc
+  setCurrentDoc(doc: Doc): void
 }
 
 class DocsStore implements IDocsStore {
-  doc: Doc = {
+  docs: Doc[] = []
+  currentDoc: Doc = {
     id: undefined,
     text: undefined,
   }
 
-  setDoc(doc?: Doc) {
-    if (doc) {
-      this.doc = doc
+  setCurrentDoc(newDoc?: Doc) {
+    if (newDoc) {
+      this.currentDoc = newDoc
     }
   }
 }

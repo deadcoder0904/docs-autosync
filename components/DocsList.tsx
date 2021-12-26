@@ -19,14 +19,6 @@ export const DocsList = () => {
   const queryClient = useQueryClient()
   const { data } = useGetDocsQuery()
 
-  useEffect(() => {
-    subscribe(state, () => {
-      console.log('state.doc.text has changed to', state.doc.text)
-    })
-  }, [])
-
-  useEffect(() => {}, [data?.docs])
-
   const { mutate: createNewDocument } = useCreateDocsMutation({
     onMutate: async () => {
       const queryKey = 'GetDocs'
@@ -37,30 +29,25 @@ export const DocsList = () => {
         text: '',
       }
 
-      state.setDoc(newDocs)
-
       const previousDocs = queryClient.getQueryData<IDocs>(queryKey)
 
       queryClient.setQueryData<IDocs>(queryKey, (oldData: any) => ({
         docs: [newDocs, ...oldData?.docs],
       }))
-      console.log(`onMutate -> ${newDocs.id}`)
 
       return { previousDocs }
     },
     // If the mutation fails, use the context returned from onMutate to roll back
     onError: (_, __, context: any) => {
       if (context?.previousDocs) {
-        console.log('onErr')
         queryClient.setQueryData('GetDocs', context.previousDocs)
       }
     },
-    // Always refetch after error or success:
-    onSettled: (newDocs) => {
+    // Refetch after success:
+    onSuccess: (newDocs) => {
       if (newDocs?.createDocs) {
         const { id, text } = newDocs.createDocs
-        console.log(`onSettled -> ${id}`)
-        state.setDoc({ id, text })
+        state.setCurrentDoc({ id, text })
       }
       queryClient.invalidateQueries('GetDocs')
       toast.success('Successfully created!')
@@ -73,16 +60,9 @@ export const DocsList = () => {
       await queryClient.cancelQueries(queryKey)
 
       const previousData = queryClient.getQueryData<IDocs>(queryKey)
-
       if (previousData) {
-        const docs = previousData.docs
-        if (docs.length === 1) {
-          console.log(state.doc)
-          state.setDoc({ id: undefined, text: undefined })
-          console.log({ previousData, len: docs.length, doc: state.doc })
-        }
         queryClient.setQueryData<IDocs>(queryKey, {
-          docs: docs.filter((doc) => doc.id !== deletedDocs.id),
+          docs: previousData.docs.filter((doc) => doc.id !== deletedDocs.id),
         })
       }
 
@@ -93,24 +73,35 @@ export const DocsList = () => {
         queryClient.setQueryData('GetDocs', context.previousDocs)
       }
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries('GetDocs')
       toast.success('Successfully deleted!')
     },
   })
 
-  const docs = data?.docs
+  useEffect(() => {
+    if (data?.docs) {
+      const latestDocs = []
+      for (let item of data.docs) {
+        if (item) {
+          latestDocs.push(item)
+        }
+      }
+      state.docs = latestDocs
+    }
+  }, [data?.docs])
 
   const createNewDocs = () => {
     createNewDocument({})
   }
 
-  const getDocsById = (id: string) => {
-    if (docs) {
-      const el = docs.find((item) => item?.id === id)
+  const getDocsById = (id: string | undefined) => {
+    if (!id) return null
+    if (state.docs) {
+      const el = state.docs.find((item) => item.id === id)
 
       if (el) {
-        state.setDoc({
+        state.setCurrentDoc({
           id,
           text: el.text,
         })
@@ -118,18 +109,13 @@ export const DocsList = () => {
     }
   }
 
-  const deleteDocsById = (id: string) => {
-    console.log(`deleteDocsById -> ${id}`)
-    if (docs) {
-      const el = docs.find((item) => item?.id === id)
-      if (el && el.id === snap.doc.id) {
-        state.setDoc({
-          id: undefined,
-          text: undefined,
-        })
-      }
-    }
+  const deleteDocsById = (id: string | undefined) => {
+    if (!id) return null
     deleteDocs({ id })
+
+    if (state.docs.length === 1) {
+      state.setCurrentDoc({ id: undefined, text: undefined })
+    }
   }
 
   return (
@@ -141,15 +127,18 @@ export const DocsList = () => {
       >
         New Docs
       </button>
-      {docs?.map((doc, i) => {
-        if (!doc?.id) return null
+      {snap.docs.map((doc, i) => {
+        if (!doc.id) return null
 
-        if (i === 0 && !snap.doc.id) {
-          state.setDoc({
+        if (i === 0 && !snap.currentDoc.id) {
+          state.setCurrentDoc({
             id: doc.id,
             text: doc.text,
           })
         }
+
+        const selected = snap.currentDoc.id === doc.id
+        const text = selected ? snap.currentDoc.text : doc.text
 
         return (
           <button
@@ -159,14 +148,13 @@ export const DocsList = () => {
               'inline-flex items-center w-full h-12 pl-3 mt-0 text-sm font-medium leading-4 shadow-sm border-primary-light focus:outline-none group',
               {
                 'dark:text-gray-700 dark:bg-primary-dark border-l-8 border-yellow-400':
-                  snap.doc.id === doc.id,
-                'dark:text-gray-300 dark:hover:bg-primary-darker':
-                  snap.doc.id !== doc.id,
+                  selected,
+                'dark:text-gray-300 dark:hover:bg-primary-darker': !selected,
               }
             )}
             onClick={() => getDocsById(doc.id)}
           >
-            <span className="truncate">{doc?.text || 'Empty docs...'}</span>
+            <span className="truncate">{text || 'Empty docs...'}</span>
             <span
               role="button"
               className="p-4 ml-auto bg-red-200"
