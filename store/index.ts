@@ -8,7 +8,7 @@ export type Doc = {
 export interface IDocsStore {
   docs: Doc[] | []
   currentDoc: Doc
-  setDoc(doc: Doc): void
+  setCurrentDoc(doc: Doc): void
 }
 
 class DocsStore implements IDocsStore {
@@ -18,9 +18,9 @@ class DocsStore implements IDocsStore {
     text: undefined,
   }
 
-  setDoc(doc?: Doc) {
-    if (doc) {
-      this.currentDoc = doc
+  setCurrentDoc(newDoc?: Doc) {
+    if (newDoc) {
+      this.currentDoc = newDoc
     }
   }
 }

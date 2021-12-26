@@ -47,7 +47,7 @@ export const DocsList = () => {
     onSuccess: (newDocs) => {
       if (newDocs?.createDocs) {
         const { id, text } = newDocs.createDocs
-        state.setDoc({ id, text })
+        state.setCurrentDoc({ id, text })
       }
       queryClient.invalidateQueries('GetDocs')
       toast.success('Successfully created!')
@@ -101,7 +101,7 @@ export const DocsList = () => {
       const el = state.docs.find((item) => item.id === id)
 
       if (el) {
-        state.setDoc({
+        state.setCurrentDoc({
           id,
           text: el.text,
         })
@@ -111,12 +111,11 @@ export const DocsList = () => {
 
   const deleteDocsById = (id: string | undefined) => {
     if (!id) return null
+    deleteDocs({ id })
 
     if (state.docs.length === 1) {
-      state.setDoc({ id: undefined, text: undefined })
+      state.setCurrentDoc({ id: undefined, text: undefined })
     }
-
-    deleteDocs({ id })
   }
 
   return (
@@ -132,7 +131,7 @@ export const DocsList = () => {
         if (!doc.id) return null
 
         if (i === 0 && !snap.currentDoc.id) {
-          state.setDoc({
+          state.setCurrentDoc({
             id: doc.id,
             text: doc.text,
           })

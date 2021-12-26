@@ -16,7 +16,7 @@ export const Writer = () => {
       const queryKey = 'GetDocs'
       queryClient.invalidateQueries(queryKey)
       if (data.createDocs?.id) {
-        state.setDoc({
+        state.setCurrentDoc({
           id: data.createDocs.id,
           text: data.createDocs.text,
         })
@@ -37,7 +37,6 @@ export const Writer = () => {
   useAutosave({
     data: snap.currentDoc,
     onSave: updateDraft,
-    interval: 500,
   })
 
   const onThreadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -49,7 +48,7 @@ export const Writer = () => {
     toggleIsSaved(false)
     const i = state.docs.findIndex((item) => item.id === snap.currentDoc.id)
     state.docs[i] = doc
-    state.setDoc(doc)
+    state.setCurrentDoc(doc)
   }
 
   const onClickHandler = () => {
