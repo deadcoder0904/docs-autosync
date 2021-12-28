@@ -75,6 +75,12 @@ export const DocsList = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries('GetDocs')
+
+      const previousData = queryClient.getQueryData<IDocs>('GetDocs')
+      if (previousData && previousData.docs.length === 0) {
+        state.setCurrentDoc({ id: undefined, text: undefined })
+      }
+
       toast.success('Successfully deleted!')
     },
   })
@@ -111,11 +117,8 @@ export const DocsList = () => {
 
   const deleteDocsById = (id: string | undefined) => {
     if (!id) return null
-    deleteDocs({ id })
 
-    if (state.docs.length === 1) {
-      state.setCurrentDoc({ id: undefined, text: undefined })
-    }
+    deleteDocs({ id })
   }
 
   return (
